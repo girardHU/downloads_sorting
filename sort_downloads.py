@@ -5,10 +5,14 @@ import json
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from monitoring import Handler
+from menu import Menu
 
 if __name__ == '__main__':
-    folder_to_track = '/home/itha/Sources/python_automatisation/from_folder'
-    folder_destination = '/home/itha/Sources/python_automatisation/to_folder'
+
+
+    menu = Menu()
+    menu.display_menu()
+    
     downloadsObserver = Observer()
     downloadsObserver.schedule(Handler(), path=folder_to_track, recursive=True)
 
