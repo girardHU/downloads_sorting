@@ -1,9 +1,8 @@
 import inquirer
 import json
 ye = ['Y', 'y', 'YES', 'yes', 'O', 'o', 'OUI', 'oui', 'oue stp']
-class Menu:
-    """
-    Menu class that holds everything related to the configuration
+class MyMenu:
+    """Menu class that holds everything related to the configuration
 
     Attributes
     ----------
@@ -17,8 +16,6 @@ class Menu:
         path where the video files will go
     video_formats : list
         list of video extensions to support, empty if none, 'all' if all should be supported
-    lessons : bool
-        determine wether the program should enable the lessons section
     lessons_config : dict
         dictionary containing all the conf for the lessons management part
 
@@ -35,13 +32,14 @@ class Menu:
 
     select_lessons_related()
         Sub-menu to configure the lessons part of the program
-    """
+
+    write_config()
+        write the attributes stored in class attributes in a config.json file"""
     monitored_folder :str
     audio_formats :list
     audio_path: str
     video_formats :list
     video_path: str
-    lessons :bool
     lessons_config :dict
 
 
@@ -51,14 +49,11 @@ class Menu:
         self.audio_path = ''
         self.video_formats = []
         self.video_path = ''
-        self.lessons = False
         self.lessons_config = {}
 
 
     def display_menu(self):
-        """
-        Main function that displays the menu and call each functions according to user's input
-        """
+        """Main function that displays the menu and call each functions according to user's input"""
         try:
             print('J\'ai besoin du chemin absolu du dossier a surveiller !')
             print('Ne te trompe pas, je ne fais pas de verification :o')
@@ -86,9 +81,7 @@ class Menu:
 
 
     def select_audio_format(self):
-        """
-        Displays audio formats selection list
-        """
+        """Displays audio formats selection list"""
         question1 = [
             inquirer.List(
                 'auto',
@@ -118,9 +111,7 @@ class Menu:
 
 
     def select_video_format(self):
-        """
-        Displays video formats selection list
-        """
+        """Displays video formats selection list"""
 
         question1 = [
             inquirer.List(
@@ -151,25 +142,24 @@ class Menu:
 
 
     def select_lessons_related(self):
-        """
-        Sub-menu to configure the lessons part of the program
-        """
+        """Sub-menu to configure the lessons part of the program"""
 
         print('combien de matieres differentes as-tu ?')
         nb_discipline = int(input())
 
         for i in range(1, nb_discipline + 1):
             
-            print('quelle norme de nommage dois-je utiliser pour cette matiere ?')
+            print(f'quelle norme de nommage dois-je utiliser pour la matiere {i} ?')
             pattern = input()
 
-            print(f'J\'ai besoin du chemin absolu vers le dossier de la matiere {i} :')
+            print('J\'ai besoin du chemin absolu vers le dossier de cette matiere !')
             path = input()
 
             self.lessons_config.update({pattern: path})
 
 
     def write_config(self):
+        """write the attributes stored in class attributes in a config.json file"""
 
         with open('formats.json') as format_json_file:
             formats = json.load(format_json_file)
@@ -188,6 +178,7 @@ class Menu:
         else:
             definitive_video_format = self.video_formats
 
+        # TODO pute audio and video in one variable
         data = {
             "monitored_folder": self.monitored_folder,
             "audio_formats": definitive_audio_format,
@@ -201,9 +192,10 @@ class Menu:
         with open('config.json', 'w') as configFile:
             json.dump(data, configFile, indent=2)
 
+# menu = Menu()
+# menu.display_menu()
 
-
-menu = Menu()
+# TODO remove following TEST VALUES
 # menu.monitored_folder = '/input'
 # menu.audio_formats = ['all']
 # menu.audio_path = '/audios'
@@ -214,4 +206,3 @@ menu = Menu()
 #     'cours2': '/cours/2',
 #     'cours3': '/cours/3'
 # }
-menu.display_menu()

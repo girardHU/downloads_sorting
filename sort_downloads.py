@@ -4,17 +4,22 @@ import time
 import json
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from monitoring import Handler
-from menu import Menu
+from monitoring import MyHandler
+from menu import MyMenu
 
+# TODO implement image handling
+# TODO detect folder arborescence from the parent folder and offer to select in which sub-folders it should be stored
 if __name__ == '__main__':
 
 
-    menu = Menu()
-    menu.display_menu()
-    
+    # menu = MyMenu()
+    # menu.display_menu()
+
+    with open('config.json') as config_file:
+        config_json = json.load(config_file)
+
     downloadsObserver = Observer()
-    downloadsObserver.schedule(Handler(), path=folder_to_track, recursive=True)
+    downloadsObserver.schedule(MyHandler(), path=config_json.get('monitored_folder'), recursive=True)
 
     downloadsObserver.start()
 
